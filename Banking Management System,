@@ -1,0 +1,404 @@
+## banking mangement system 
+# bissmillah
+
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.prompt import Prompt, IntPrompt, Confirm
+from rich.progress import Progress
+import time
+from rich.live import Live
+from rich.layout import Layout
+from rich.tree import Tree
+from rich.text import Text
+from rich.markdown import Markdown
+from rich.syntax import Syntax
+from rich.columns import Columns
+
+console = Console()
+
+
+def main_menu():
+    console.print(
+        Panel("                                                              MAIN MENU")
+    )
+
+    print("1. Creat Account")
+    print("2. Log In")
+    print("3. Exit")
+    print()
+
+main_menu()
+
+choose = int(input("Choose an option: "))
+
+def creat_account():
+    console.print(
+        Panel("                                                            CREAT ACCOUNT")
+    )
+
+    print()
+
+    with open("creat_account.txt", "w") as file:
+        print()
+
+        name = Prompt.ask("-Enter your Name")
+        password = Prompt.ask("-Creat a Password")
+
+
+# I will just make here a progresse bar, its not a logical thing, its just for pristige;;
+
+        with Progress() as progress:
+            task = progress.add_task("Loading...", total=100)
+
+            while not progress.finished:
+                progress.update(task, advance=1)
+                time.sleep(0.03)
+
+## I just finished making the progress bar, don't worry if you can't do like this, just ask chat gpt for that because-
+#its not a logic thing or somthing important, its just for make it look beatifule;;
+
+                id = 1001
+                balance = 0
+
+                file.write(f"{name} | {id} | {balance} | {password}")
+
+    print()
+    table = Table(title="USER INFORMATIONS")
+
+    table.add_column("                    ACCOUNT ID            ")
+    table.add_column("                    NAME               ")
+    table.add_column("                    BALANCE            ")
+
+    table.add_row( str(id), name, str(balance) + "$" )
+    console.print(table)
+
+    print()
+    print("Account Created Successfuly!")
+    print()
+    
+creat_account()
+
+
+## start making the account_menu;;
+def account_menu():
+    print("=" * 30, "ACCOUNT MENU", "=" * 30)
+    print()
+
+    options = ["1. Check Balence", "2. Deposit", "3. withdraw", "4. Transfer Money", "5. Transaction History", "6. Account Information", "7. Logout"]
+    for option in options:
+        print(option)
+    print()
+
+## finished the fonction of the account_menu;
+
+
+# now i will start on the secound option, "Log in";;
+## starting/...
+def log_in():
+    console.print(  
+        Panel("                                                           LOGIN")
+    )   
+
+    with open("creat_account.txt", "r") as file:
+        for line in file:
+            data = line.strip().split(" | ")
+            name = data[0]
+            id = data[1]
+            balance = data[2]
+            password = data[3]   
+
+        file.readlines()   
+
+        try:
+            Account_ID = int(input("Account ID: "))
+            Password = input("Password: ")
+
+        except ValueError:
+            print("Value Error from Alex!!")
+
+
+        print()
+        print("Login to your account successfuly!") 
+        print()
+
+        print("Welcome,", name + ".")
+        print()
+
+        account_menu()
+
+        choose_an_option = int(input("Choose: "))
+
+## start working on the first option in 'Account Menu';;
+## starting::
+    if choose_an_option == 1:
+        print("=" * 32 + " BALANCE " + "=" * 32)  
+        print()
+        print("Cuurent Balance:", balance + "$")
+
+        account_menu()
+
+        choose_an_option = int(input("Choose: "))
+
+## finished the first option: "show balance"; 
+# starting in the new option (secound option);
+    transactions = []
+    if choose_an_option == 2:
+        print("=" * 32 + " DEPOSIT " + "=" * 32)
+        print()
+        enter_amount_deposit = int(input("Enter amount: "))
+
+        new_balance = int(balance) + int(enter_amount_deposit)
+        transactions.append(new_balance)
+        print()
+        print("New Balance:", enter_amount_deposit, "$")  
+        account_menu()
+        
+        choose_an_option = int(input("Choose: "))
+
+        while choose_an_option == 2:
+            print("=" * 32 + " DEPOSIT " + "=" * 32)
+            print()
+            enter_amount_deposit = int(input("Enter amount: "))
+
+            new_balance = int(new_balance) + int(enter_amount_deposit)
+            transactions.append(new_balance)
+            print()
+            print("New Balance:", enter_amount_deposit, "$")  
+            account_menu()
+            
+            choose_an_option = int(input("Choose: "))
+
+
+# I'll start in third option:
+    if choose_an_option == 3:
+        print("=" * 32 + " WITHDRAW " + "=" * 32)
+        print()
+        try:
+            enter_amount_withdraw = int(input("Enter amount: "))
+
+        except:
+            print("Enter Number Only!!")
+
+            enter_amount_withdraw = int(input("Enter amount: "))
+
+        while enter_amount_withdraw > int(new_balance):
+            print()
+            print("Insufficient balance.")
+            account_menu()
+            choose_an_option = int(input("Choose: "))
+
+            if choose_an_option == "3":
+                print("=" * 32 + " WITHDRAW " + "=" * 32)
+                print()
+
+                try:
+                    enter_amount_withdraw = int(input("Enter amount: "))
+
+                except:
+                    print("Enter Number Only!!")
+
+                    enter_amount_withdraw = int(input("Enter amount: "))
+
+                    if int(enter_amount_withdraw) > int(new_balance):
+                        print()
+                        print("Insufficient balance.")
+                        account_menu()
+                        choose_an_option = int(input("Choose: "))
+
+        if enter_amount_withdraw < new_balance:
+            print()
+            print("Withdrawal successful.")
+            print()
+
+            new_balance = int(new_balance) - int(enter_amount_withdraw)
+
+            try:
+                transactions = new_balance
+
+            except TypeError:
+                print("Can't mixt between 'int' and 'list' !!")
+
+            print()
+            print("New balance:", new_balance , "$")
+            account_menu()
+
+            choose_an_option = int(input("Choose: "))
+
+# Trying to make a loop for replay the same option while the user choosed this option;;  don't be shy there is nobody
+            while choose_an_option == 3:
+                print("=" * 32 + " WITHDRAW " + "=" * 32)
+                print()
+                try:
+                    enter_amount_withdraw = int(input("Enter amount: "))
+        
+                except:
+                    print("Enter Number Only!!")
+        
+                    enter_amount_withdraw = int(input("Enter amount: "))
+        
+                while enter_amount_withdraw > int(new_balance):
+                    print()
+                    print("Insufficient balance.")
+                    account_menu()
+                    choose_an_option = int(input("Choose: "))
+        
+                    if choose_an_option == "3":
+                        print("=" * 32 + " WITHDRAW " + "=" * 32)
+                        print()
+        
+                        try:
+                            enter_amount_withdraw = int(input("Enter amount: "))
+        
+                        except:
+                            print("Enter Number Only!!")
+        
+                            enter_amount_withdraw = int(input("Enter amount: "))
+        
+                            if int(enter_amount_withdraw) > int(new_balance):
+                                print()
+                                print("Insufficient balance.")
+                                account_menu()
+                                choose_an_option = int(input("Choose: "))
+        
+                if enter_amount_withdraw < new_balance:
+                    print()
+                    print("Withdrawal successful.")
+                    print()
+        
+                    new_balance = int(new_balance) - int(enter_amount_withdraw)
+        
+                    try:
+                        transactions = new_balance
+        
+                    except TypeError:
+                        print("Can't mixt between 'int' and 'list' !!")
+        
+                    print()
+                    print("New balance:", new_balance , "$")
+                    account_menu()
+        
+                    choose_an_option = int(input("Choose: "))
+
+                    if choose_an_option != 3:
+                        break
+
+                    account_menu()
+                    choose_an_option = int(input("Choose: "))
+                    
+## if choose  == 4;
+##---------------------________________________________________-------------------------
+
+    if choose_an_option == 4:
+        print("=" * 32 + " TRANSFER MONEY " + "=" * 32)
+        print()
+
+        with open("account_ID's.txt", "w") as file:
+            account_id = int(input("Enter your Account ID: "))
+
+        print()
+
+        amount_transfermed = int(input(f"Enter the amount you want to transfer-it to {account_id}: "))
+            
+        while int(amount_transfermed) > int(new_balance):       
+            print("Sorry, Inssuficient Balance!!") 
+            account_menu()
+
+            choose_an_option = int(input("Choose: "))
+
+            if choose_an_option == 4:
+                print("=" * 32 + " TRANSFER MONEY " + "=" * 32)     
+                print()
+
+
+                with open("account_ID's.txt", "w") as file:
+                    account_id = int(input("Enter Account ID: "))
+
+                print()
+                amount_transfermed = int(input(f"Enter the amount you want to transfer-it to {account_id}: "))   
+                    
+                if int(amount_transfermed) > int(new_balance):
+                    print("Sorry, Inssuficient Balance!!")
+                    account_menu()
+                    
+                    choose_an_option = int(input("Choose"))
+
+        if int(amount_transfermed) < int(new_balance):
+            try:
+                account_id_tranfermed = int(input("Enter the ID of the account you want to tranfer money to"))
+                enter_password = input("Enter your password: ")
+
+            except ValueError:
+                print("ValueError from Alex!")
+
+            except TypeError:
+                print("TypeError from Alex!")
+
+## opening the file and read it for know the informations'sss;;
+            with open("creat_account.txt", "r") as file:
+                for line in file:
+                    data = line.strip().split(" | ")
+                    id = data[1]
+                    password = data[3]   
+
+                file.readlines()
+## closing the file;;
+
+                if enter_password == password:
+                    print("=" * 66)
+
+                    new_balance_transformed = int(new_balance) - int(amount_transfermed)
+                    try:
+                        transactions -= int(amount_transfermed)
+
+                    except TypeError:
+                        print("Can't mixt between 'int' and 'list' !!")
+
+                    print()
+                    print("Amount Trasfermed Successfuly!!") 
+                    print("This is your new_balance:", new_balance_transformed, "$")
+                    account_menu()
+
+                    choose_an_option = int(input("Choose"))
+
+        else:
+            print("Incorrect Password!!")
+
+        account_menu()
+
+        choose_an_option = int(input("Choose: "))
+
+## finished the 4 option, and going too the fifth option:
+# starting in the 5 option;;
+
+#5- TRANSACTION HISTORY ------------------------------------------------------------ 5- TRANSACTION HISTORY;
+
+    if choose_an_option == 5:
+        print("=" * 25 + " TRANSACTION HISTORY " + "=" * 25)
+        print()
+
+        if transactions:
+            print(transactions)
+            print(transactions)
+
+        else:
+            print("Somthing went wrong!")
+
+        account_menu()
+        choose_an_option = int(input("Choose"))
+
+        while choose_an_option == 5:
+            print("=" * 25 + " TRANSACTION HISTORY " + "=" * 25)
+            print()
+
+            print(transactions)
+            print(transactions)
+
+            account_menu()
+            choose_an_option = int(input("Choose"))
+
+            if choose_an_option != 5:
+                break
+
+        
+log_in()
